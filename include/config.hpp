@@ -1,5 +1,6 @@
 #pragma once
 #include "nginx.hpp"
+#include <fcntl.h>
 
 class config {
     public:
