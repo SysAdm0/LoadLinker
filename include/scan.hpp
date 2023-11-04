@@ -3,7 +3,8 @@
 
 #include <arpa/inet.h>
 #include <sys/socket.h>
-#include <unistd.h>
+#include <netinet/tcp.h>
+#include <netinet/ip.h>
 
 class scan {
     public:
@@ -14,7 +15,11 @@ class scan {
 
     protected:
         int send_tcp_socket(std::string ip_address);
+        char *craft_packet(std::string ip_address);
 
     private:
-        int port = 80;
+        int port = 113;
+        struct ip IPheader;
+        struct tcphdr TCPheader;
+        struct sockaddr_in host_addr;
 };
