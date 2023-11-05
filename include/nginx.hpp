@@ -1,5 +1,7 @@
 #pragma once
 
+#include <map>
+#include <array>
 #include <unistd.h>
 #include <iostream>
 #include <fstream>

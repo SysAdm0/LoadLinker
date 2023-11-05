@@ -13,6 +13,7 @@ class scan {
 
     protected:
         int send_tcp_socket(std::string ip_address);
+        std::map<int, std::array<int, 2>> ip_fragmentation(std::string ip_address, std::string netmask);
 
     private:
         struct sockaddr_in host_addr;
