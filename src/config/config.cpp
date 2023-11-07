@@ -20,8 +20,8 @@ void config::server_config(int argc, char **argv, int context) {
         std::cout << "Error: bad command line arguments!" << std::endl;
         exit(1);
     } try {
-        this->_server = argv[1];
-        this->_port = context == 0 ? 0 : std::stoi(argv[2]);
+        this->_server = context == 0 ? "" : argv[1];
+        this->_port = context == 0 ?  std::stoi(argv[1]) : std::stoi(argv[2]);
     } catch (std::exception &e) {
         std::cout << "Error: bad command line arguments!" << std::endl;
         exit(1);

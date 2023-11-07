@@ -9,5 +9,8 @@
 #include <string>
 #include <cstring>
 #include <algorithm>
+#include <vector>
 
 #include "config/config.hpp"
+#include "server/nginx.hpp"
+#include "server/listener.hpp"
