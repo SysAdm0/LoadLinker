@@ -10,5 +10,5 @@
 #include <cstring>
 #include <algorithm>
 
-#include "config.hpp"
-#include "scan.hpp"
+#include "config/config.hpp"
+#include "agent/session.hpp"
