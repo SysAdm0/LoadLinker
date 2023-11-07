@@ -10,11 +10,9 @@ void session::close_session() {
     close(this->sock);
 }
 
-void session::loop_session(int wait_time) {
-     for (int i = 0; i < 5; i++) {
-        send(this->sock, "", 0, 0);
-        sleep(wait_time);
-    }
+void session::start_session(int wait_time) {
+    send(this->sock, "", 0, 0);
+    sleep(wait_time);
 }
 
 int session::connect_server(std::string ip_address, int port) {
@@ -29,6 +27,7 @@ int session::connect_server(std::string ip_address, int port) {
 
     if (connect(this->sock, (struct sockaddr *)&this->host_addr, sizeof(this->host_addr))) {
         std::cout << "Connection failed" << std::endl;
+        sleep(2);
         return 1;
     }
     return 0;

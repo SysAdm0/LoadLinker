@@ -5,8 +5,11 @@ int main(int argc, char **argv) {
     session session;
 
     config.server_config(argc, argv, 1);
-    if (session.connect_server(config.get_ip_address(), config.get_bind_port()) == 0)
-        session.loop_session(1);
-    session.close_session();
+    while (1) {
+        if (session.connect_server(config.get_ip_address(), config.get_bind_port()) == 0) {
+            session.start_session(1);
+            session.close_session();
+        }
+    }
     return 0;
 }

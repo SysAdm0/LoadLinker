@@ -2,19 +2,26 @@
 
 listener::listener() {
     _sock = 0;
-    _timeout.tv_sec = 1;
-    _timeout.tv_usec = 0;
+    _timeout.tv_sec = 2;
+    _timeout.tv_usec = 10;
 }
 
 void listener::run() {
     nginx nginx;
+    std::vector<std::thread> threads;
+    std::cout << "NGINX Server is running..." << std::endl;
 
     while (1) {
-        for (int i = 0; i < 5; i++) {
-            std::string host = accept_connection();
-            if (!host.empty())
-                nginx.register_server(host);
-        }
+        for (int i = 0; i < 100; i++) {
+            threads.emplace_back([this, &nginx](){
+                std::string host = accept_connection();
+                if (!host.empty()) {
+                    nginx.register_server(host);
+                }
+            });
+        } for (auto& thread : threads)
+            thread.join();
+        threads.clear();
         nginx.cancel_registration();
     }
 }
@@ -26,11 +33,9 @@ std::string listener::accept_connection() const {
 
     client_sock = accept(_sock, (struct sockaddr *)&client_addr, &client_addr_size);
     if (client_sock < 0) {
-        std::cout << "Connection failed" << std::endl;
         return "";
     }
     char *client_ip = inet_ntoa(client_addr.sin_addr);
-    std::cout << "Connection accepted from " << client_ip << std::endl;
     close(client_sock);
     return client_ip;
 }

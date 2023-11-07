@@ -10,7 +10,7 @@ class session {
         ~session() = default;
 
         int connect_server(std::string ip_address, int port);
-        void loop_session(int wait_time);
+        void start_session(int wait_time);
         void close_session();
 
     private:

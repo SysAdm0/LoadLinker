@@ -9,6 +9,7 @@
 #include <string>
 #include <cstring>
 #include <algorithm>
+#include <thread>
 #include <vector>
 
 #include "config/config.hpp"
