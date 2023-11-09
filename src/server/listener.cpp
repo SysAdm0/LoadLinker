@@ -9,7 +9,7 @@ listener::listener() {
 void listener::run() {
     nginx nginx;
     std::vector<std::thread> threads;
-    std::cout << "NGINX Server is running..." << std::endl;
+    std::cout << "LoadLinker Server is running..." << std::endl;
 
     while (1) {
         for (int i = 0; i < 100; i++) {
