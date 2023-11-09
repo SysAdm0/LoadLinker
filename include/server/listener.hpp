@@ -9,7 +9,7 @@ class listener {
         listener();
         ~listener() = default;
 
-        int init_listener(int port);
+        int init_listener(std::map<std::string, std::string> config);
         void run();
 
     protected:
@@ -17,6 +17,7 @@ class listener {
 
     private:
         int _sock;
+        std::string _upstream_path;
         struct sockaddr_in _host_addr;
         struct timeval _timeout;
 };

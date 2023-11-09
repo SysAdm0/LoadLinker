@@ -3,19 +3,21 @@
 #include "agent/agent.hpp"
 #include <fcntl.h>
 
-#define SERVER_CONFIG 0;
-#define AGENT_CONFIG 1;
+enum ConfigType {
+    SERVER_CONFIG = 1,
+    AGENT_CONFIG = 2
+};
 
 class config {
     public:
         config();
         ~config() = default;
 
-        void server_config(int argc, char **argv, int context);
-        std::string get_ip_address();
-        int get_bind_port();
+        void loadlinker_configure(ConfigType type, std::string path);
+        std::map<std::string, std::string> get_server_config();
+        std::map<std::string, std::string> get_agent_config();
 
     private:
-        std::string _server;
-        int _port;
+        std::map<std::string, std::string> _loadlinker_server;
+        std::map<std::string, std::string> _loadlinker_agent;
 };

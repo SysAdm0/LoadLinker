@@ -9,12 +9,13 @@ class session {
         session();
         ~session() = default;
 
-        int connect_server(std::string ip_address, int port);
+        int connect_server(std::map<std::string, std::string> config);
         void start_session(int wait_time);
         void close_session();
 
     private:
         struct sockaddr_in host_addr;
         struct timeval timeout;
+        std::string app_port;
         int sock;
 };

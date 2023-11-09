@@ -40,10 +40,11 @@ std::string listener::accept_connection() const {
     return client_ip;
 }
 
-int listener::init_listener(int port) {
+int listener::init_listener(std::map<std::string, std::string> config) {
     this->_host_addr.sin_family = AF_INET;
-    this->_host_addr.sin_port = htons(port);
-    this->_host_addr.sin_addr.s_addr = INADDR_ANY;
+    this->_upstream_path = config["upstream_path"];
+    this->_host_addr.sin_port = htons(std::stoi(config["listen_port"]));
+    this->_host_addr.sin_addr.s_addr = inet_addr(config["bind_interface"].data());
 
     _sock = socket(AF_INET, SOCK_STREAM, 0);
     setsockopt(_sock, SOL_SOCKET, SO_RCVTIMEO, (char *)&this->_timeout, sizeof(this->_timeout));
