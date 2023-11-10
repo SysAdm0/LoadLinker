@@ -37,7 +37,7 @@ void nginx::check_servers_state() {
 
 void nginx::write_configuration_file() {
     std::ofstream file;
-    file.open("loadbalancer.conf", std::ios::out | std::ios::trunc);
+    file.open("/etc/nginx/loadlinker/upstream.conf", std::ios::out | std::ios::trunc);
     for (std::string &server : this->_servers_list)
         file << server << ':'<< 80 << ';' << std::endl;
     file << std::endl;

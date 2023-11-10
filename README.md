@@ -8,22 +8,22 @@ To get started with LoadLinker you need to understand the client-server communic
 
 The agent on the client initiate a request to the server to obtain its IP address. The server, conducting health checks every second, dynamically decides whether to register the client in the configuration or not.
 
-#### Running the Server
-To launch the server, execute the following command in your terminal:
-
-```bash
-./LoadLinker <port_to_bind>
-```
-
-#### Running the Agent
-To activate the agent, use the following command:
-
-```bash
-./LoadLinkerAgent <server_ip> <server_port>
-```
-
 ### Build Instructions
 ```bash
 mkdir build && cd build
 cmake -G "Unix Makefiles" .. && cmake --build .
+```
+
+### Testing Procedure
+To run the test, execute the following command in your terminal:
+```bash
+cd test && ./run_test.sh
+```
+If you want to check the test results, you can display upstream file like this:
+```bash
+docker exec -it test-loadbalancer-1 /bin/watch "cat /etc/nginx/loadlinker/upstream.conf"
+```
+To stop the test and remove the containers, run the command on the test directory:
+```bash
+docker-compose -f docker-compose.yml down
 ```

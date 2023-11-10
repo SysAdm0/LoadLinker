@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  loadbalancer:
+    build:
+      dockerfile: Dockerfile
+      context: ./Dockerfile/LoadLinker
+    ports:
+      - "8080:8080"
+    networks:
+      loadlinker_network:
+        ipv4_address: 172.16.0.100
+  machine1:
+    build:
+      dockerfile: Dockerfile
+      context: ./Dockerfile/LoadLinkerAgent
+    networks:
+      loadlinker_network:
+        ipv4_address: 172.16.0.11
+  machine2:
+    build:
+      dockerfile: Dockerfile
+      context: ./Dockerfile/LoadLinkerAgent
+    networks:
+      loadlinker_network:
+        ipv4_address: 172.16.0.12
+  machine3:
+    build:
+      dockerfile: Dockerfile
+      context: ./Dockerfile/LoadLinkerAgent
+    networks:
+      loadlinker_network:
+        ipv4_address: 172.16.0.13
+
+networks:
+  loadlinker_network:
+    ipam:
+      config:
+        - subnet: 172.16.0.0/24
