@@ -13,7 +13,7 @@ class listener {
         void run();
 
     protected:
-        [[nodiscard]] std::string accept_connection() const;
+        [[nodiscard]] std::pair<std::string, int> accept_connection() const;
 
     private:
         int _sock;

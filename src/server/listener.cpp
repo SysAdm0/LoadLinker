@@ -7,16 +7,16 @@ listener::listener() {
 }
 
 void listener::run() {
-    nginx nginx;
+    nginx nginx(this->_upstream_path);
     std::vector<std::thread> threads;
     std::cout << "LoadLinker Server is running..." << std::endl;
 
     while (1) {
         for (int i = 0; i < 100; i++) {
             threads.emplace_back([this, &nginx](){
-                std::string host = accept_connection();
-                if (!host.empty()) {
-                    nginx.register_server(host);
+                std::pair<std::string, int> host = accept_connection();
+                if (!host.first.empty()) {
+                    nginx.register_server(host.first, host.second);
                 }
             });
         } for (auto& thread : threads)
@@ -26,18 +26,24 @@ void listener::run() {
     }
 }
 
-std::string listener::accept_connection() const {
+std::pair<std::string, int> listener::accept_connection() const {
     int client_sock = 0;
+    char port[1024] = {0};
     struct sockaddr_in client_addr;
     socklen_t client_addr_size = sizeof(client_addr);
 
     client_sock = accept(_sock, (struct sockaddr *)&client_addr, &client_addr_size);
-    if (client_sock < 0) {
-        return "";
-    }
+    if (client_sock < 0)
+        return std::make_pair("", 0);
+    recv(client_sock, port, 1024, 0);
+
     char *client_ip = inet_ntoa(client_addr.sin_addr);
     close(client_sock);
-    return client_ip;
+    try {
+        return std::make_pair(client_ip, std::stoi(port));
+    } catch (std::exception &e) {
+        return std::make_pair("", 0);
+    }
 }
 
 int listener::init_listener(std::map<std::string, std::string> config) {

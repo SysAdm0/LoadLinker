@@ -10,5 +10,5 @@ COPY ./config/loadlinker.conf /etc/nginx/conf.d/loadlinker.conf
 
 # RUN nginx -s reload
 
-EXPOSE 8080
+EXPOSE 50000
 CMD ["/usr/bin/LoadLinker"]

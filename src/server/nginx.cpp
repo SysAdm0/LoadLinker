@@ -1,10 +1,17 @@
 #include "server/nginx.hpp"
 
-void nginx::register_server(std::string ip_address) {
+#include <utility>
+
+nginx::nginx(std::string upstream_path) {
+    this->_upstream_path = std::move(upstream_path);
+}
+
+void nginx::register_server(std::string ip_address, int port) {
     if (std::find(this->_servers_list.begin(),
                   this->_servers_list.end(),
                   ip_address) == this->_servers_list.end()) {
         this->_servers_list.push_back(ip_address);
+        this->_application_ports[ip_address] = port;
     }
 }
 
@@ -37,9 +44,9 @@ void nginx::check_servers_state() {
 
 void nginx::write_configuration_file() {
     std::ofstream file;
-    file.open("/etc/nginx/loadlinker/upstream.conf", std::ios::out | std::ios::trunc);
+    file.open(this->_upstream_path + "/upstream.conf", std::ios::out | std::ios::trunc);
     for (std::string &server : this->_servers_list)
-        file << server << ':'<< 80 << ';' << std::endl;
+        file << "server " << server << ':' << this->_application_ports[server] << ';' << std::endl;
     file << std::endl;
     file.close();
 }
