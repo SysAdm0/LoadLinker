@@ -5,7 +5,9 @@ include_directories(./include)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_COMPILER clang++)
-set(CMAKE_EXE_LINKER_FLAGS "-static")
+
+# Uncomment to enable static linking
+# set(CMAKE_EXE_LINKER_FLAGS "-static")
 
 file(GLOB_RECURSE LOADLINKER "src/server/*.cpp" "src/config/*.cpp")
 file(GLOB_RECURSE LOADLINKERAGENT "src/agent/*.cpp" "src/config/*.cpp")

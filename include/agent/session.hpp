@@ -1,6 +1,7 @@
 #pragma once
 #include "agent/agent.hpp"
 
+#include <sys/time.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
