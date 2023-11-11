@@ -3,11 +3,11 @@
 config::config() {
     // server default config
     this->_loadlinker_server = {
-            std::make_pair("upstream_path", "/etc/nginx/loadlinker/"),
+            std::make_pair("upstream_path", "/etc/loadlinker"),
             std::make_pair("bind_interface", "0.0.0.0"),
             std::make_pair("listen_port", "50000")
     };
-//    // agent default config
+   // agent default config
     this->_loadlinker_agent = {
             std::make_pair("server_address", ""),
             std::make_pair("server_port", "50000"),
