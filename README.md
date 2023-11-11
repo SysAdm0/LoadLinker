@@ -21,7 +21,7 @@ cd test && ./run_test.sh
 ```
 If you want to check the test results, you can display upstream file like this:
 ```bash
-docker exec -it test-loadbalancer-1 /bin/watch "cat /etc/nginx/loadlinker/upstream.conf"
+docker exec -it loadbalancer /bin/watch "cat /etc/loadlinker/upstream.conf"
 ```
 To stop the test and remove the containers, run the command on the test directory:
 ```bash

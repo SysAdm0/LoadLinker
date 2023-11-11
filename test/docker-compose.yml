@@ -6,31 +6,43 @@ services:
       dockerfile: Dockerfile
       context: ./Dockerfile/LoadLinker
     ports:
-      - "50000:50000"
+      - "80:80"
     networks:
       loadlinker_network:
         ipv4_address: 172.16.0.100
+    container_name: loadbalancer
   machine1:
     build:
       dockerfile: Dockerfile
-      context: ./Dockerfile/LoadLinkerAgent
+      context: ./Dockerfile/Machine1
     networks:
       loadlinker_network:
         ipv4_address: 172.16.0.11
+    container_name: machine1
   machine2:
     build:
       dockerfile: Dockerfile
-      context: ./Dockerfile/LoadLinkerAgent
+      context: ./Dockerfile/Machine2
     networks:
       loadlinker_network:
         ipv4_address: 172.16.0.12
+    container_name: machine2
   machine3:
     build:
       dockerfile: Dockerfile
-      context: ./Dockerfile/LoadLinkerAgent
+      context: ./Dockerfile/Machine3
     networks:
       loadlinker_network:
         ipv4_address: 172.16.0.13
+    container_name: machine3
+  machine4:
+    build:
+      dockerfile: Dockerfile
+      context: ./Dockerfile/Machine4
+    networks:
+      loadlinker_network:
+        ipv4_address: 172.16.0.14
+    container_name: machine4
 
 networks:
   loadlinker_network:

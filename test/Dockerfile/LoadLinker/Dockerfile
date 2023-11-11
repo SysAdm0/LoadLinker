@@ -2,13 +2,13 @@ FROM alpine:latest
 
 RUN apk update
 RUN apk add nginx
-RUN rm -rf /etc/nginx/sites-available/default
+RUN rm -f /etc/nginx/http.d/default.conf
 
 COPY ./LoadLinker /usr/bin/LoadLinker
-COPY ./config /etc/nginx/loadlinker
-COPY ./config/loadlinker.conf /etc/nginx/conf.d/loadlinker.conf
+COPY ./config /etc/loadlinker
+COPY ./config/loadlinker.conf /etc/nginx/http.d/loadlinker.conf
 
-# RUN nginx -s reload
-
-EXPOSE 50000
-CMD ["/usr/bin/LoadLinker"]
+EXPOSE 80
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+CMD ["/entrypoint.sh"]
