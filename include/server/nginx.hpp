@@ -8,6 +8,7 @@ class nginx {
 
         void register_server(std::string ip_address, int port);
         void cancel_registration();
+        int get_server_count() const;
 
     protected:
         void check_servers_state();

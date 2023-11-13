@@ -2,8 +2,8 @@
 
 listener::listener() {
     _sock = 0;
-    _timeout.tv_sec = 2;
-    _timeout.tv_usec = 10;
+    _timeout.tv_sec = 1;
+    _timeout.tv_usec = 250000;
 }
 
 bool is_number(const std::string& s)
@@ -14,12 +14,13 @@ bool is_number(const std::string& s)
 }
 
 void listener::run() {
+    int thread_count = 2;
     nginx nginx(this->_upstream_path);
     std::vector<std::thread> threads;
     std::cout << "LoadLinker Server is running..." << std::endl;
 
     while (1) {
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < thread_count; i++) {
             threads.emplace_back([this, &nginx](){
                 std::pair<std::string, int> host = accept_connection();
                 if (!host.first.empty()) {
@@ -28,6 +29,12 @@ void listener::run() {
             });
         } for (auto& thread : threads)
             thread.join();
+
+        if (nginx.get_server_count() > thread_count - 1)
+            thread_count += 2;
+        else if (nginx.get_server_count() < thread_count - 1)
+            thread_count = thread_count > 2 ? thread_count - 1 : 2;
+
         threads.clear();
         nginx.cancel_registration();
     }

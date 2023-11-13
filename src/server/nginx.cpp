@@ -19,6 +19,10 @@ void nginx::cancel_registration() {
     this->check_servers_state();
 }
 
+int nginx::get_server_count() const {
+    return this->_servers_list.size();
+}
+
 void nginx::check_servers_state() {
     std::vector<std::string> ip_to_add;
     std::vector<std::string> ip_to_remove;
