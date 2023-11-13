@@ -6,13 +6,20 @@ listener::listener() {
     _timeout.tv_usec = 10;
 }
 
+bool is_number(const std::string& s)
+{
+    std::string::const_iterator it = s.begin();
+    while (it != s.end() && std::isdigit(*it)) ++it;
+    return !s.empty() && it == s.end();
+}
+
 void listener::run() {
     nginx nginx(this->_upstream_path);
     std::vector<std::thread> threads;
     std::cout << "LoadLinker Server is running..." << std::endl;
 
     while (1) {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 20; i++) {
             threads.emplace_back([this, &nginx](){
                 std::pair<std::string, int> host = accept_connection();
                 if (!host.first.empty()) {
@@ -39,17 +46,16 @@ std::pair<std::string, int> listener::accept_connection() const {
 
     char *client_ip = inet_ntoa(client_addr.sin_addr);
     close(client_sock);
-    try {
-        return std::make_pair(client_ip, std::stoi(port));
-    } catch (std::exception &e) {
+    if (!is_number(port))
         return std::make_pair("", 0);
-    }
+    return std::make_pair(client_ip, std::stoi(port));
 }
 
 int listener::init_listener(std::map<std::string, std::string> config) {
+    int port = is_number(config["listen_port"]) ? std::stoi(config["listen_port"]) : 50000;
     this->_host_addr.sin_family = AF_INET;
+    this->_host_addr.sin_port = htons(port);
     this->_upstream_path = config["upstream_path"];
-    this->_host_addr.sin_port = htons(std::stoi(config["listen_port"]));
     this->_host_addr.sin_addr.s_addr = inet_addr(config["bind_interface"].data());
 
     _sock = socket(AF_INET, SOCK_STREAM, 0);
