@@ -14,7 +14,13 @@ services:
   machine1:
     build:
       dockerfile: Dockerfile
-      context: ./Dockerfile/Machine1
+      context: ./Dockerfile/MachineTemplate
+      args:
+        - "IP_ADDRESS=172.16.0.11"
+        - "NAME=MACHINE"
+        - 'VERSION=1'
+    depends_on:
+      - loadbalancer
     networks:
       loadlinker_network:
         ipv4_address: 172.16.0.11
@@ -22,7 +28,13 @@ services:
   machine2:
     build:
       dockerfile: Dockerfile
-      context: ./Dockerfile/Machine2
+      context: ./Dockerfile/MachineTemplate
+      args:
+        - "IP_ADDRESS=172.16.0.12"
+        - "NAME=MACHINE"
+        - "VERSION=2"
+    depends_on:
+      - machine1
     networks:
       loadlinker_network:
         ipv4_address: 172.16.0.12
@@ -30,7 +42,13 @@ services:
   machine3:
     build:
       dockerfile: Dockerfile
-      context: ./Dockerfile/Machine3
+      context: ./Dockerfile/MachineTemplate
+      args:
+        - "IP_ADDRESS=172.16.0.13"
+        - "NAME=MACHINE"
+        - "VERSION=3"
+    depends_on:
+        - machine2
     networks:
       loadlinker_network:
         ipv4_address: 172.16.0.13
@@ -38,7 +56,13 @@ services:
   machine4:
     build:
       dockerfile: Dockerfile
-      context: ./Dockerfile/Machine4
+      context: ./Dockerfile/MachineTemplate
+      args:
+        - "IP_ADDRESS=172.16.0.14"
+        - "NAME=MACHINE"
+        - "VERSION=4"
+    depends_on:
+        - machine3
     networks:
       loadlinker_network:
         ipv4_address: 172.16.0.14

@@ -1,11 +1,18 @@
-<!-- LoadLinker Test Template -->
+## LoadLinker Test Template ##
+#!/bin/sh
 
+NAME=$1
+VERSION=$2
+IP_ADDRESS=$3
+
+cat << EOF > /usr/share/nginx/html/index.html
 <html>
 <body>
 <div class="default">
     <center>
         <h1>Welcome to LoadLinker!</h1>
-        <h2>MACHINE 3</h2>
+        <h2>$NAME $VERSION</h2>
+        <h3>$IP_ADDRESS<h3>
     </center>
 </div>
 </center>
@@ -21,3 +28,4 @@
         margin-left: -200px;
     }
 </style>
+EOF
