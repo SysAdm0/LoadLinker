@@ -29,7 +29,7 @@ void config::loadlinker_configure(ConfigType type, std::string path) {
     std::string line;
 
     if (!ReadConfigFile.is_open())
-        std::cout << "Unable to find network.conf file\n --> Using default configuration" << std::endl;
+        std::cout << "Unable to find loadlinker.conf file\n --> Using default configuration" << std::endl;
     while (getline (ReadConfigFile, line)) {
         line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end());
         std::string key = line.substr(0, line.find(delimiter));

@@ -12,7 +12,7 @@ RUN sh build.sh
 
 RUN cp build/LoadLinker /usr/bin/LoadLinker
 COPY ./config /etc/loadlinker
-COPY ./config/loadlinker.conf /etc/nginx/http.d/loadlinker.conf
+COPY ./config/default.conf /etc/nginx/http.d/test.conf
 
 WORKDIR /
 COPY entrypoint.sh /entrypoint.sh

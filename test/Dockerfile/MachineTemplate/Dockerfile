@@ -15,7 +15,7 @@ COPY ./source .
 RUN chmod +x build.sh
 RUN sh build.sh
 
-COPY ./config/network.conf /etc/loadlinker/network.conf
+COPY ./config/loadlinker.conf /etc/loadlinker/loadlinker.conf
 COPY ./config/index.sh /tmp/index.sh
 RUN cp build/LoadLinkerAgent /usr/bin/LoadLinkerAgent
 RUN /tmp/index.sh $NAME $VERSION $IP_ADDRESS
