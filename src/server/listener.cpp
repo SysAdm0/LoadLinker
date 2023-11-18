@@ -6,6 +6,10 @@ listener::listener() {
     _timeout.tv_usec = 250000;
 }
 
+void signal_handler(int signal) {
+    gSignalStatus = signal;
+}
+
 bool is_number(const std::string& s)
 {
     std::string::const_iterator it = s.begin();
@@ -16,10 +20,11 @@ bool is_number(const std::string& s)
 void listener::run() {
     int thread_count = 2;
     nginx nginx(this->_upstream_path);
+    std::signal(SIGINT, signal_handler);
     std::vector<std::thread> threads;
     std::cout << "LoadLinker Server is running..." << std::endl;
 
-    while (1) {
+    while (gSignalStatus != SIGINT && gSignalStatus != SIGTERM && gSignalStatus != SIGQUIT) {
         for (int i = 0; i < thread_count; i++) {
             threads.emplace_back([this, &nginx](){
                 std::pair<std::string, int> host = accept_connection();

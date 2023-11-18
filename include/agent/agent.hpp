@@ -2,6 +2,7 @@
 
 #include <map>
 #include <array>
+#include <csignal>
 #include <unistd.h>
 #include <iostream>
 #include <fstream>

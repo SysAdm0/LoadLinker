@@ -21,3 +21,7 @@ class config {
         std::map<std::string, std::string> _loadlinker_server;
         std::map<std::string, std::string> _loadlinker_agent;
 };
+
+namespace {
+    volatile std::sig_atomic_t gSignalStatus;
+}

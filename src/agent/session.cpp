@@ -26,10 +26,7 @@ int session::connect_server(std::map<std::string, std::string> config) {
     setsockopt(this->sock, SOL_SOCKET, SO_RCVTIMEO, (char *)&this->timeout, sizeof(this->timeout));
     setsockopt(this->sock, SOL_SOCKET, SO_SNDTIMEO, (char *)&this->timeout, sizeof(this->timeout));
 
-    if (connect(this->sock, (struct sockaddr *)&this->host_addr, sizeof(this->host_addr))) {
-        std::cout << "Connection failed" << std::endl;
-        sleep(2);
+    if (connect(this->sock, (struct sockaddr *)&this->host_addr, sizeof(this->host_addr)))
         return 1;
-    }
     return 0;
 }
