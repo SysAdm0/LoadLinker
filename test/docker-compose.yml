@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
       context: ./Dockerfile/LoadLinker
     ports:
-      - "8080:80"
+      - "80:80"
     networks:
       loadlinker_network:
         ipv4_address: 172.16.0.100
