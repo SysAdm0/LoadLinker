@@ -7,7 +7,10 @@ void signal_handler(int signal) {
 int main() {
     config config;
     session session;
+
     std::signal(SIGINT, signal_handler);
+    std::signal(SIGTERM, signal_handler);
+    std::signal(SIGQUIT, signal_handler);
 
     config.loadlinker_configure(AGENT_CONFIG, "/etc/loadlinker/network.conf");
     while (gSignalStatus != SIGINT && gSignalStatus != SIGTERM && gSignalStatus != SIGQUIT) {

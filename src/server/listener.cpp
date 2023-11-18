@@ -20,9 +20,12 @@ bool is_number(const std::string& s)
 void listener::run() {
     int thread_count = 2;
     nginx nginx(this->_upstream_path);
-    std::signal(SIGINT, signal_handler);
     std::vector<std::thread> threads;
     std::cout << "LoadLinker Server is running..." << std::endl;
+
+    std::signal(SIGINT, signal_handler);
+    std::signal(SIGTERM, signal_handler);
+    std::signal(SIGQUIT, signal_handler);
 
     while (gSignalStatus != SIGINT && gSignalStatus != SIGTERM && gSignalStatus != SIGQUIT) {
         for (int i = 0; i < thread_count; i++) {
