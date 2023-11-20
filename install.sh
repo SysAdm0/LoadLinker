@@ -39,18 +39,18 @@ if [ "$CONFIG" == "server" ]; then
     sudo mv /etc/loadlinker/default.conf /etc/nginx/$NGINX_V/
 
     echo "Enabling LoadLinker service..."
-    sudo mv ./loadlinker/loadlinker.service /etc/systemd/system/
+    sudo mv /etc/loadlinker/loadlinker.service /etc/systemd/system/
     sudo systemctl daemon-reload && sudo systemctl enable loadlinker.service
     sudo systemctl restart nginx && sudo systemctl start loadlinker.service
 
 elif [ "$CONFIG" == "agent" ]; then
     echo "Installing LoadLinker agent..."
-    sed '7s/$/Agent/; 2s/^......................./&Agent/' loadlinker/loadlinker.service > loadlinker/loadlinkeragent.service
+    sed '7s/$/Agent/; 2s/^......................./&Agent/' ../loadlinker/loadlinker.service > ./loadlinkeragent.service
     sudo mkdir /etc/LoadLinker && sudo cp ../loadlinker/loadlinker.conf /etc/LoadLinker/
     sudo cp ./LoadLinkerAgent /usr/bin/LoadLinkerAgent
 
     echo "Enabling LoadLinkerAgent service..."
-    sudo mv ./loadlinker/loadlinkeragent.service /etc/systemd/system/
+    sudo mv ./loadlinkeragent.service /etc/systemd/system/
     sudo systemctl daemon-reload && sudo systemctl enable loadlinkeragent.service
     sudo systemctl start loadlinkeragent.service
 fi
