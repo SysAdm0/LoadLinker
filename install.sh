@@ -35,6 +35,7 @@ if [ "$CONFIG" == "server" ]; then
 
     echo "Configuring Nginx..."
     if [[ -e "/etc/nginx/http.d/default.conf" ]]; then  $NGINX_V="http.d"; fi
+    sudo rm -f /etc/nginx/sites-available/default && sudo rm -f /etc/nginx/sites-enabled/default
     sudo rm /etc/nginx/$NGINX_V/default.conf
     sudo mv /etc/loadlinker/default.conf /etc/nginx/$NGINX_V/
 
