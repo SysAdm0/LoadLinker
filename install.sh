@@ -30,7 +30,7 @@ cmake -G "Unix Makefiles" .. && cmake --build .
 if [ "$CONFIG" == "server" ]; then
     echo "Installing LoadLinker server with Nginx..."
     if [[ ! -z $YUM_CMD ]]; then yum install -y nginx; elif [[ ! -z $APT_CMD ]]; then apt install -y nginx; else apk add nginx; fi
-    sudo mkdir /etc/loadlinker && sudo cp ../loadlinker/* /etc/loadlinker/ && sudo rm /etc/loadlinker/loadlinker.service
+    sudo mkdir /etc/loadlinker && sudo cp ../loadlinker/* /etc/loadlinker/
     sudo cp ./LoadLinker /usr/bin/LoadLinker
 
     echo "Configuring Nginx..."
