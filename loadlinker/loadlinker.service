@@ -1,0 +1,11 @@
+[Unit]
+Description="LoadLinker Service"
+After=network.target
+
+[Service]
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ExecStart=/usr/bin/LoadLinker
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
