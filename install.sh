@@ -11,11 +11,11 @@ APK_CMD=$(which apk)
 
 echo "Installing dependencies..."
 if [[ ! -z $YUM_CMD ]]; then
-   yum install -y gcc gcc-c++ clang cmake make
+   sudo yum install -y gcc gcc-c++ clang cmake make
 elif [[ ! -z $APT_CMD ]]; then
-   apt install -y build-essential clang cmake make
+   sudo apt install -y build-essential clang cmake make
 elif [[ ! -z $APK_CMD ]]; then
-    apk add --no-cache build-base clang cmake make
+   sudo apk add --no-cache build-base clang cmake make
 else
    echo "Error: can't install dependencies!"
    exit 1;
