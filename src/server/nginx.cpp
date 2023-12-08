@@ -50,7 +50,7 @@ void nginx::write_configuration_file() {
     std::ofstream file;
 
     file.open(this->_upstream_path + "/upstream.conf", std::ios::out | std::ios::trunc);
-    for (std::string &server : this->_servers_list)
+    for (std::string const &server : this->_servers_list)
         file << "server " << server << ':' << this->_application_ports[server] << ';' << std::endl;
     file << std::endl;
     file.close();

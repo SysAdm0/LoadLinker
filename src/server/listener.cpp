@@ -54,7 +54,8 @@ std::pair<std::string, int> listener::accept_connection() const {
     struct sockaddr_in client_addr;
     socklen_t client_addr_size = sizeof(client_addr);
 
-    client_sock = accept(_sock, (struct sockaddr *)&client_addr, &client_addr_size);
+    client_sock = accept(_sock, reinterpret_cast<struct sockaddr*>(&client_addr), reinterpret_cast<socklen_t*>(&client_addr_size));
+
     if (client_sock < 0)
         return std::make_pair("", 0);
     recv(client_sock, port, 1024, 0);
@@ -74,9 +75,9 @@ int listener::init_listener(std::map<std::string, std::string> config) {
     this->_host_addr.sin_addr.s_addr = inet_addr(config["bind_interface"].data());
 
     _sock = socket(AF_INET, SOCK_STREAM, 0);
-    setsockopt(_sock, SOL_SOCKET, SO_RCVTIMEO, (char *)&this->_timeout, sizeof(this->_timeout));
-    setsockopt(_sock, SOL_SOCKET, SO_SNDTIMEO, (char *)&this->_timeout, sizeof(this->_timeout));
-    bind(this->_sock, (struct sockaddr *)&this->_host_addr, sizeof(this->_host_addr));
+    setsockopt(_sock, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char*>(&_timeout), sizeof(_timeout));
+    setsockopt(_sock, SOL_SOCKET, SO_SNDTIMEO, reinterpret_cast<char*>(&_timeout), sizeof(_timeout));
+    bind(this->_sock, reinterpret_cast<struct sockaddr*>(&_host_addr), sizeof(_host_addr));
     listen(this->_sock, 5);
     return 0;
 }

@@ -36,11 +36,11 @@ void config::loadlinker_configure(ConfigType type, std::string path) {
         switch (type) {
             case SERVER_CONFIG:
                 if (this->_loadlinker_server.find(key) != this->_loadlinker_server.end()) {
-                    this->_loadlinker_server[key] = line.substr(line.find(delimiter) + 1, line.length());
+                    this->_loadlinker_server.try_emplace(key, line.substr(line.find(delimiter) + 1, line.length()));
                 } break;
             case AGENT_CONFIG:
                 if (this->_loadlinker_agent.find(key) != this->_loadlinker_agent.end()) {
-                    this->_loadlinker_agent[key] = line.substr(line.find(delimiter) + 1, line.length());
+                    this->_loadlinker_agent.try_emplace(key, line.substr(line.find(delimiter) + 1, line.length()));
                 } break;
         }
     }

@@ -23,10 +23,10 @@ int session::connect_server(std::map<std::string, std::string> config) {
 
     this->sock = socket(AF_INET, SOCK_STREAM, 0);
     inet_pton(AF_INET, config["server_address"].data(), &this->host_addr.sin_addr);
-    setsockopt(this->sock, SOL_SOCKET, SO_RCVTIMEO, (char *)&this->timeout, sizeof(this->timeout));
-    setsockopt(this->sock, SOL_SOCKET, SO_SNDTIMEO, (char *)&this->timeout, sizeof(this->timeout));
+    setsockopt(this->sock, SOL_SOCKET, SO_RCVTIMEO, reinterpret_cast<char*>(&this->timeout), sizeof(this->timeout));
+    setsockopt(this->sock, SOL_SOCKET, SO_SNDTIMEO, reinterpret_cast<char*>(&this->timeout), sizeof(this->timeout));
 
-    if (connect(this->sock, (struct sockaddr *)&this->host_addr, sizeof(this->host_addr)))
+    if (connect(this->sock, reinterpret_cast<struct sockaddr*>(&this->host_addr), sizeof(this->host_addr)))
         return 1;
     return 0;
 }
