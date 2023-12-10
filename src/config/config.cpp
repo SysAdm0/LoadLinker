@@ -1,13 +1,11 @@
 #include "config/config.hpp"
 
 config::config() {
-    // server default config
     this->_loadlinker_server = {
             std::make_pair("upstream_path", "/etc/loadlinker"),
             std::make_pair("bind_interface", "0.0.0.0"),
             std::make_pair("listen_port", "50000")
     };
-   // agent default config
     this->_loadlinker_agent = {
             std::make_pair("server_address", ""),
             std::make_pair("server_port", "50000"),
@@ -36,11 +34,11 @@ void config::loadlinker_configure(ConfigType type, std::string path) {
         switch (type) {
             case SERVER_CONFIG:
                 if (this->_loadlinker_server.find(key) != this->_loadlinker_server.end()) {
-                    this->_loadlinker_server.try_emplace(key, line.substr(line.find(delimiter) + 1, line.length()));
+                    this->_loadlinker_server.find(key)->second = line.substr(line.find(delimiter) + 1, line.length());
                 } break;
             case AGENT_CONFIG:
                 if (this->_loadlinker_agent.find(key) != this->_loadlinker_agent.end()) {
-                    this->_loadlinker_agent.try_emplace(key, line.substr(line.find(delimiter) + 1, line.length()));
+                    this->_loadlinker_agent.find(key)->second = line.substr(line.find(delimiter) + 1, line.length());
                 } break;
         }
     }
