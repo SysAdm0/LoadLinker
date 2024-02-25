@@ -1,7 +1,6 @@
 #pragma once
 
 #include "agent/agent.hpp"
-#include <fcntl.h>
 
 enum ConfigType {
     SERVER_CONFIG = 1,
@@ -13,7 +12,9 @@ class config {
         config();
         ~config() = default;
 
-        void loadlinker_configure(ConfigType type, std::string path);
+        void check_loadlinker_config(ConfigType type);
+        void loadlinker_configure(ConfigType type, int argc, const char *argv[]);
+        static void display_help(ConfigType type, int argc, const char *argv[]);
         std::map<std::string, std::string> get_server_config();
         std::map<std::string, std::string> get_agent_config();
 

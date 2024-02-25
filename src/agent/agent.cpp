@@ -4,7 +4,7 @@ void signal_handler(int signal) {
     gSignalStatus = signal;
 }
 
-int main() {
+int main(const int argc, const char *argv[]) {
     config config;
     session session;
 
@@ -12,7 +12,7 @@ int main() {
     std::signal(SIGTERM, signal_handler);
     std::signal(SIGQUIT, signal_handler);
 
-    config.loadlinker_configure(AGENT_CONFIG, "/etc/loadlinker/loadlinker.conf");
+    config.loadlinker_configure(AGENT_CONFIG, argc, argv);
     while (gSignalStatus != SIGINT && gSignalStatus != SIGTERM && gSignalStatus != SIGQUIT) {
         if (session.connect_server(config.get_agent_config()) == 0) {
             session.start_session(1);
