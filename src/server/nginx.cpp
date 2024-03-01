@@ -7,16 +7,22 @@ nginx::nginx(std::string upstream_path) {
 }
 
 void nginx::register_server(std::string ip_address, int port) {
-    if (std::find(this->_servers_list.begin(),
-                  this->_servers_list.end(),
-                  ip_address) == this->_servers_list.end()) {
-        this->_servers_list.push_back(ip_address);
-        this->_application_ports[ip_address] = port;
-    }
-}
+    std::vector<std::string> new_server;
 
-void nginx::cancel_registration() {
-    this->check_servers_state();
+    std::cout << "Registering server " << ip_address << ':' << port << std::endl;
+    for (std::vector<std::string> &server : this->_servers_list) {
+        if (server[0] == ip_address && server[1] == std::to_string(port)) {
+            server[2] = std::to_string(std::time(nullptr));
+            return;
+        }
+    }
+
+    std::cout << "Server not found, adding it to the list" << std::endl;
+    new_server.push_back(ip_address);
+    new_server.push_back(std::to_string(port));
+    new_server.push_back(std::to_string(std::time(nullptr)));
+    this->_servers_list.push_back(new_server);
+    new_server.clear();
 }
 
 int nginx::get_server_count() const {
@@ -24,34 +30,28 @@ int nginx::get_server_count() const {
 }
 
 void nginx::check_servers_state() {
-    std::vector<std::string> ip_to_add;
-    std::vector<std::string> ip_to_remove;
+    int index = this->get_server_count();
+    int server_count = index;
 
-    for (std::string &server : this->_servers_list) {
-        if (std::find(this->_old_servers_list.begin(),
-                      this->_old_servers_list.end(),
-                      server) == this->_old_servers_list.end())
-            ip_to_add.push_back(server);
+    for (int size = 0; size < server_count; size++) {
+        if (std::time(nullptr) - std::stoi(this->_servers_list[size][2]) > this->_check_time) {
+            this->_servers_list.erase(this->_servers_list.begin() + size);
+            std::cout << "Removing server from the list" << std::endl;
+            server_count--, size--;
+        }
     }
-    for (std::string &server : this->_old_servers_list) {
-        if (std::find(this->_servers_list.begin(),
-                      this->_servers_list.end(),
-                      server) == this->_servers_list.end())
-            ip_to_remove.push_back(server);
-    }
-    if (ip_to_add.size() > 0 || ip_to_remove.size() > 0) {
+    //TODO: Check new server connection
+    //This check verify only if current server are expired
+    if (server_count != index)
         this->write_configuration_file();
-        this->_old_servers_list = this->_servers_list;
-    }
-    this->_servers_list.clear();
 }
 
 void nginx::write_configuration_file() {
     std::ofstream file;
 
     file.open(this->_upstream_path + "/upstream.conf", std::ios::out | std::ios::trunc);
-    for (std::string const &server : this->_servers_list)
-        file << "server " << server << ':' << this->_application_ports[server] << ';' << std::endl;
+    for (std::vector<std::string> &server : this->_servers_list)
+        file << "server " << server[0] << ':' << server[1] << ';' << std::endl;
     file << std::endl;
     file.close();
 

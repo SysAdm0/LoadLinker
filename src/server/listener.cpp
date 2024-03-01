@@ -54,16 +54,15 @@ void listener::run() {
             }
             for (int conn = 0; conn < _max_simultaneous_connections; conn++) {
                 if (selected >= 0 && FD_ISSET(agent_sock[conn], &readfds)) {
-                    std::pair<std::string, int> host =receive_data(agent_sock[conn]);
-                    // TODO: Implement nginx.register_server
-                    // if (!host.first.empty())
-                    //     nginx.register_server(host.first, host.second);
+                    std::pair<std::string, int> host = receive_data(agent_sock[conn]);
+                    if (!host.first.empty())
+                        nginx.register_server(host.first, host.second);
                     close(agent_sock[conn]);
                     agent_sock[conn] = 0;
                 }
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
-            nginx.cancel_registration();
+            nginx.check_servers_state();
         }
     });
     selectThread.join();

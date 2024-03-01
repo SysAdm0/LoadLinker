@@ -7,16 +7,14 @@ class nginx {
         ~nginx() = default;
 
         void register_server(std::string ip_address, int port);
-        void cancel_registration();
-        int get_server_count() const;
+        void check_servers_state();
 
     protected:
-        void check_servers_state();
         void write_configuration_file();
+        int get_server_count() const;
 
     private:
+        const int _check_time = 5;
         std::string _upstream_path;
-        std::vector<std::string> _servers_list;
-        std::vector<std::string> _old_servers_list;
-        std::map<std::string, int> _application_ports;
+        std::vector<std::vector<std::string>> _servers_list;
 };
