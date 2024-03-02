@@ -15,6 +15,16 @@ void session::start_session(int wait_time) {
     sleep(wait_time);
 }
 
+int session::retry_after_timeout(bool raise_timeout) {
+    static int retry = 1;
+
+    if (raise_timeout)
+        retry = retry < 32 ? retry * 2 : 32;
+    else
+        retry = 1;
+    return retry;
+}
+
 int session::connect_server(std::map<std::string, std::string> config) {
     this->host_addr.sin_family = AF_INET;
     this->app_port = config["application_port"];

@@ -11,6 +11,7 @@ class session {
         ~session() = default;
 
         int connect_server(std::map<std::string, std::string> config);
+        static int retry_after_timeout(bool raise_timeout = true);
         void start_session(int wait_time);
         void close_session();
 
