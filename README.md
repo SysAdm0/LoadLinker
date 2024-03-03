@@ -15,12 +15,14 @@ We can see that the VM-3 is down, LoadLinker server will remove it from the conf
 #### LoadLinker Server
 Run the installation script for linux amd64:
 ```bash
-curl https://raw.githubusercontent.com/SysAdm0/LoadLinker/main/install.sh | bash -s server
+curl -O https://raw.githubusercontent.com/SysAdm0/LoadLinker/main/install.sh
+chmod +x install.sh && ./install.sh server
 ```
 #### LoadLinker Agent
 Run the installation script below:
 ```bash
-curl https://raw.githubusercontent.com/SysAdm0/LoadLinker/main/install.sh | bash -s agent
+curl -O https://raw.githubusercontent.com/SysAdm0/LoadLinker/main/install.sh
+chmod +x install.sh && ./install.sh agent
 ```
 
 ### Build Instructions

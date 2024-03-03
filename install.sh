@@ -65,7 +65,7 @@ elif [ "$CONFIG" == "agent" ]; then
 
     echo "Enabling LoadLinker service..."
     mv /tmp/loadlinker-$VERSION/loadlinker/loadlinker.service ~/.config/systemd/user/
-    sed -i "s|^ExecStart=.*$|ExecStart=$HOME/.local/bin/loadlinker-agent -p $server_port -i $server_ip -u $app_port|" \
+    sed -i "s|^ExecStart=.*$|ExecStart=$HOME/.local/bin/loadlinker-agent -p $server_port -ip $server_ip -ap $app_port|" \
       ~/.config/systemd/user/loadlinker.service
     systemctl --user enable loadlinker.service
     systemctl --user start loadlinker.service
