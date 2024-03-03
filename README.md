@@ -15,32 +15,13 @@ We can see that the VM-3 is down, LoadLinker server will remove it from the conf
 #### LoadLinker Server
 Run the installation script for linux amd64:
 ```bash
-curl https://raw.githubusercontent.com/lucien-carneiro/LoadLinker/main/install.sh | bash -s server
+curl https://raw.githubusercontent.com/SysAdm0/LoadLinker/main/install.sh | bash -s server
 ```
-Setup server configuration file at `/etc/loadlinker/loadlinker.conf`:
-```bash
-[LoadLinker Server]
-upstream_path = /etc/loadlinker
-bind_interface = 0.0.0.0
-listen_port = <loadlinker_listen_port>
-```
-And finally restart the service: `systemctl restart loadlinker`
-
 #### LoadLinker Agent
 Run the installation script below:
 ```bash
-curl https://raw.githubusercontent.com/lucien-carneiro/LoadLinker/main/install.sh | bash -s agent
+curl https://raw.githubusercontent.com/SysAdm0/LoadLinker/main/install.sh | bash -s agent
 ```
-Setup agent configuration and application output port in `/etc/loadlinker/loadlinker.conf`:
-```bash
-[LoadLinker Agent]
-server_address = <loadlinker_server_ip>
-server_port = <loadlinker_server_port>
-
-[Application]
-application_port = 8080
-```
-Don't forget to restart the service: `systemctl restart loadlinkeragent`
 
 ### Build Instructions
 ```bash

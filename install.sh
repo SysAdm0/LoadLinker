@@ -1,60 +1,76 @@
 #!/bin/bash
-## LoadLinker installer script for Linux ##
 
 CONFIG=$1
-VERSION="1.0.1"
-NGINX_V="conf.d"
+VERSION="v1.0.2"
+NGINX_CONF="conf.d"
 
-YUM_CMD=$(which yum)
-APT_CMD=$(which apt)
-APK_CMD=$(which apk)
-
-echo "Installing dependencies..."
-if [[ ! -z $YUM_CMD ]]; then
-   sudo yum install -y gcc gcc-c++ clang cmake make
-elif [[ ! -z $APT_CMD ]]; then
-   sudo apt install -y build-essential clang cmake make
-elif [[ ! -z $APK_CMD ]]; then
-   sudo apk add --no-cache build-base clang cmake make
-else
-   echo "Error: can't install dependencies!"
-   exit 1;
-fi
-
-echo "Building LoadLinker v$VERSION..."
-cd /tmp && wget https://github.com/lucien-carneiro/LoadLinker/archive/refs/tags/v$VERSION.tar.gz
-tar -xvzf v$VERSION.tar.gz && cd LoadLinker-$VERSION
-mkdir build && cd build
-cmake -G "Unix Makefiles" .. && cmake --build .
+echo "##### LOADLINKER CONFIGURATION #####"
 
 if [ "$CONFIG" == "server" ]; then
-    echo "Installing LoadLinker server with Nginx..."
-    if [[ ! -z $YUM_CMD ]]; then yum install -y nginx; elif [[ ! -z $APT_CMD ]]; then apt install -y nginx; else apk add nginx; fi
-    sudo mkdir /etc/loadlinker && sudo cp ../loadlinker/* /etc/loadlinker/
-    sudo cp ./LoadLinker /usr/bin/LoadLinker
+    if [[ $(sudo &> /dev/null)  ]]; then
+        echo "You don't have sudo right."
+	     exit 1
+    elif [[ ! $(sudo which nginx) ]]; then
+        echo "Nginx is not installed. Please install Nginx first."
+        exit 1
+    fi
 
-    echo "Configuring Nginx..."
-    if [[ -e "/etc/nginx/http.d/default.conf" ]]; then  $NGINX_V="http.d"; fi
+    echo -n "Listen port (default: 50000): "
+    read listen_port
+    listen_port=${listen_port:-50000}
+    echo -n "IP to bind (default: 0.0.0.0): "
+    read ip_to_bind
+    ip_to_bind=${ip_to_bind:-0.0.0.0}
+    echo -n "Upstream path (default: ~/.config/loadlinker): "
+    read upstream
+    upstream=${upstream:-~/.config/loadlinker}
+
+    echo "Downloading source files..."
+    mkdir -p ~/.local/bin ~/.config/loadlinker ~/.config/systemd/user /tmp/loadlinker-$VERSION
+    wget "https://github.com/SysAdm0/LoadLinker/releases/download/$VERSION/loadlinker-server" -O ~/.local/bin/loadlinker-server
+    wget "https://github.com/SysAdm0/LoadLinker/archive/refs/tags/$VERSION.tar.gz" -O /tmp/$VERSION.tar.gz
+    chmod +x ~/.local/bin/loadlinker-server
+    tar -xvf /tmp/$VERSION.tar.gz -C /tmp/loadlinker-$VERSION --strip-components 1
+
+    echo "Configuring Nginx and checking permissions..."
+    if [[ -e "/etc/nginx/http.d/default.conf" ]]; then  $NGINX_CONF="http.d"; fi
+    mv /tmp/loadlinker-$VERSION/loadlinker/upstream.conf ~/.config/loadlinker/upstream.conf
     sudo rm -f /etc/nginx/sites-available/default && sudo rm -f /etc/nginx/sites-enabled/default
-    sudo rm /etc/nginx/$NGINX_V/default.conf
-    sudo mv /etc/loadlinker/default.conf /etc/nginx/$NGINX_V/
+    sudo mv /tmp/loadlinker-$VERSION/loadlinker/default.conf /etc/nginx/$NGINX_CONF/
+    sudo sed -i "s|/etc/loadlinker|$upstream|" /etc/nginx/$NGINX_CONF/default.conf
 
     echo "Enabling LoadLinker service..."
-    sudo mv /etc/loadlinker/loadlinker.service /etc/systemd/system/
-    sudo systemctl daemon-reload && sudo systemctl enable loadlinker.service
-    sudo systemctl restart nginx && sudo systemctl start loadlinker.service
+    mv /tmp/loadlinker-$VERSION/loadlinker/loadlinker.service ~/.config/systemd/user/
+    sed -i "s|^ExecStart=.*$|ExecStart=$HOME/.local/bin/loadlinker-server -p $listen_port -i $ip_to_bind -u $upstream|" \
+      ~/.config/systemd/user/loadlinker.service
+    systemctl --user enable loadlinker.service
+    systemctl --user start loadlinker.service
 
 elif [ "$CONFIG" == "agent" ]; then
-    echo "Installing LoadLinker agent..."
-    sed '7s/$/Agent/; 2s/^......................./&Agent/' ../loadlinker/loadlinker.service > ./loadlinkeragent.service
-    sudo mkdir /etc/loadlinker && sudo cp ../loadlinker/loadlinker.conf /etc/loadlinker/
-    sudo cp ./LoadLinkerAgent /usr/bin/LoadLinkerAgent
+    echo -n "Server IP: "
+    read server_ip
+    echo -n "Server port (default: 50000): "
+    read server_port
+    server_port=${server_port:-50000}
+    echo -n "Application port (default: 8080): "
+    read app_port
+    app_port=${app_port:-8080}
 
-    echo "Enabling LoadLinkerAgent service..."
-    sudo mv ./loadlinkeragent.service /etc/systemd/system/
-    sudo systemctl daemon-reload && sudo systemctl enable loadlinkeragent.service
-    sudo systemctl start loadlinkeragent.service
+    echo "Downloading source files..."
+    mkdir -p ~/.local/bin ~/.config/systemd/user /tmp/loadlinker-$VERSION
+    wget "https://github.com/SysAdm0/LoadLinker/releases/download/$VERSION/loadlinker-agent" -O ~/.local/bin/loadlinker-agent
+    wget "https://github.com/SysAdm0/LoadLinker/archive/refs/tags/$VERSION.tar.gz" -O /tmp/$VERSION.tar.gz
+    chmod +x ~/.local/bin/loadlinker-agent
+    tar -xvf /tmp/$VERSION.tar.gz -C /tmp/loadlinker-$VERSION --strip-components 1
+
+    echo "Enabling LoadLinker service..."
+    mv /tmp/loadlinker-$VERSION/loadlinker/loadlinker.service ~/.config/systemd/user/
+    sed -i "s|^ExecStart=.*$|ExecStart=$HOME/.local/bin/loadlinker-agent -p $server_port -i $server_ip -u $app_port|" \
+      ~/.config/systemd/user/loadlinker.service
+    systemctl --user enable loadlinker.service
+    systemctl --user start loadlinker.service
 fi
 
-cd /tmp && rm -rf v$VERSION.tar.gz LoadLinker-$VERSION
-echo "LoadLinker v$VERSION installed successfully!"
+echo "Cleaning build files..."
+rm -rf /tmp/$VERSION.tar.gz /tmp/LoadLinker-$VERSION
+echo "LoadLinker-$CONFIG $VERSION installed successfully!"
